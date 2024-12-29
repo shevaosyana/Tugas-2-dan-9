@@ -1,0 +1,166 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Prediksi Daun Jeruk - Metode Monte Carlo
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+ </head>
+ <body class="font-roboto bg-gray-50">
+  <header class="bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white p-6">
+   <h1 class="text-3xl font-bold">
+    Prediksi Daun Jeruk
+   </h1>
+  </header>
+  <main class="container mx-auto p-8">
+   <section class="bg-white p-8 rounded-lg shadow-xl">
+    <h2 class="text-2xl font-semibold">
+     Metode Monte Carlo
+    </h2>
+    <p class="mb-6 text-lg text-gray-700">
+     Metode Monte Carlo adalah teknik matematika yang digunakan untuk memprediksi hasil dari suatu proses yang melibatkan ketidakpastian. Dalam konteks ini, kita akan menggunakan metode ini untuk memprediksi pertumbuhan daun jeruk.
+    </p>
+    <img alt="Ilustrasi daun jeruk" class="w-full mb-6 rounded-lg shadow-lg" height="400" src="https://storage.googleapis.com/a1aa/image/uTN2FM6VY9KGMVMtero085sOUvf7onPHkV8boGzRTf6SxB8nA.jpg" width="600"/>
+    <div class="mb-6">
+     <label class="block" for="numPredictions">
+      Jumlah Prediksi:
+     </label>
+     <input class="border p-2 rounded" id="numPredictions" type="number" value="15"/>
+    </div>
+    <button class="bg-green-500 text-white px-6 py-3 rounded-lg" onclick="generatePredictions()">
+     Mulai Prediksi
+    </button>
+   </section>
+   <section class="mt-12">
+    <h2 class="text-2xl font-semibold">
+     Hasil Prediksi
+    </h2>
+    <div class="bg-white p-8 rounded-lg shadow-xl" id="predictionTable">
+    </div>
+   </section>
+   <section class="mt-12">
+    <h2 class="text-2xl font-semibold">
+     Tabel Bilangan Acak (RNG)
+    </h2>
+    <div class="bg-white p-8 rounded-lg shadow-xl" id="rngTable">
+    </div>
+   </section>
+   <section class="mt-12">
+    <h2 class="text-2xl font-semibold">
+     Nama Daun Jeruk dan Pertumbuhan
+    </h2>
+    <div class="bg-white p-8 rounded-lg shadow-xl" id="growthTable">
+    </div>
+   </section>
+  </main>
+  <footer class="bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white p-6 text-center">
+   <p>
+    © 2023 Prediksi Daun Jeruk
+   </p>
+  </footer>
+  <script>
+   function generatePredictions() {
+            const numPredictions = document.getElementById('numPredictions').value;
+            let predictions = [];
+            let cumulativeProbability = 0;
+
+            for (let i = 1; i <= numPredictions; i++) {
+                const randomPrediction = (Math.random() * (15 - 9) + 9).toFixed(2);
+                const probability = 1 / numPredictions;
+                cumulativeProbability += probability;
+                const interval = `${(randomPrediction - 0.5).toFixed(2)} - ${(parseFloat(randomPrediction) + 0.5).toFixed(2)} cm`;
+                const randomValue = Math.random().toFixed(4);
+
+                predictions.push({ i, randomPrediction, probability, cumulativeProbability, interval, randomValue });
+            }
+
+            let tableHTML = `
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-green-100">
+                            <th class="border px-4 py-2">Nomor</th>
+                            <th class="border px-4 py-2">Prediksi (cm)</th>
+                            <th class="border px-4 py-2">Probabilitas</th>
+                            <th class="border px-4 py-2">Kumulatif</th>
+                            <th class="border px-4 py-2">Hitungan Interval (cm)</th>
+                            <th class="border px-4 py-2">Bilangan Acak</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            predictions.forEach(p => {
+                tableHTML += `
+                    <tr>
+                        <td class="border px-4 py-2">${p.i}</td>
+                        <td class="border px-4 py-2">${p.randomPrediction} cm</td>
+                        <td class="border px-4 py-2">${p.probability.toFixed(4)}</td>
+                        <td class="border px-4 py-2">${p.cumulativeProbability.toFixed(4)}</td>
+                        <td class="border px-4 py-2">${p.interval}</td>
+                        <td class="border px-4 py-2">${p.randomValue}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `</tbody></table>`;
+            document.getElementById('predictionTable').innerHTML = tableHTML;
+
+            let rngTableHTML = `
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-green-100">
+                            <th class="border px-4 py-2">Nomor</th>
+                            <th class="border px-4 py-2">Bilangan Acak</th>
+                            <th class="border px-4 py-2">Prediksi (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            predictions.forEach(p => {
+                rngTableHTML += `
+                    <tr>
+                        <td class="border px-4 py-2">${p.i}</td>
+                        <td class="border px-4 py-2">${p.randomValue}</td>
+                        <td class="border px-4 py-2">${p.randomPrediction} cm</td>
+                    </tr>
+                `;
+            });
+
+            rngTableHTML += `</tbody></table>`;
+            document.getElementById('rngTable').innerHTML = rngTableHTML;
+
+            let growthTableHTML = `
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-green-100">
+                            <th class="border px-4 py-2">Nomor</th>
+                            <th class="border px-4 py-2">Nama Daun Jeruk</th>
+                            <th class="border px-4 py-2">Pertumbuhan (cm)</th>
+                            <th class="border px-4 py-2">Frekuensi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            predictions.forEach(p => {
+                growthTableHTML += `
+                    <tr>
+                        <td class="border px-4 py-2">${p.i}</td>
+                        <td class="border px-4 py-2">Daun Jeruk ${String.fromCharCode(64 + p.i)}</td>
+                        <td class="border px-4 py-2">${p.randomPrediction} cm</td>
+                        <td class="border px-4 py-2">${(p.probability * numPredictions).toFixed(0)}</td>
+                    </tr>
+                `;
+            });
+
+            growthTableHTML += `</tbody></table>`;
+            document.getElementById('growthTable').innerHTML = growthTableHTML;
+        }
+  </script>
+ </body>
+</html>
